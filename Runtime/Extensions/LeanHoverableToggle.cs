@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
-#if HAS_LEAN_GUI
+#if NO_LEAN_GUI
 
 #else
 using Lean.Transition;
@@ -21,52 +21,66 @@ namespace Lean.Gui
 		public static LinkedList<LeanHoverableToggle> Instances = new LinkedList<LeanHoverableToggle>();
 
 		/// <summary>This lets you change the current toggle state of this UI element.</summary>
-		public bool On { set { Set(value); } get { return on; } } [SerializeField] private bool on;
+		public bool On { set { Set(value); } get { return on; } }
+		[SerializeField] private bool on;
 
 		/// <summary>If you enable this, then any sibling GameObjects (i.e. same parent GameObject) will automatically be turned off.
 		/// This allows you to make radio boxes, or force only one panel to show at a time, etc.</summary>
-		public bool TurnOffSiblings { set { if (turnOffSiblings = value) TurnOffSiblingsNow(); } get { return turnOffSiblings; } } [SerializeField] private bool turnOffSiblings;
+		public bool TurnOffSiblings { set { if (turnOffSiblings = value) TurnOffSiblingsNow(); } get { return turnOffSiblings; } }
+		[SerializeField] private bool turnOffSiblings;
 
 		/// <summary>This allows you to perform a transition when this toggle turns on.
 		/// You can create a new transition GameObject by right clicking the transition name, and selecting <b>Create</b>.
 		/// For example, the <b>Graphic.color Transition (LeanGraphicColor)</b> component can be used to change the color.
 		/// NOTE: Any transitions you perform here should be reverted in the <b>Off Transitions</b> setting using a matching transition component.</summary>
-		public LeanPlayer OnTransitions { get { if (onTransitions == null) onTransitions = new LeanPlayer(); return onTransitions; } } [SerializeField] private LeanPlayer onTransitions;
+		public LeanPlayer OnTransitions { get { if (onTransitions == null) onTransitions = new LeanPlayer(); return onTransitions; } }
+		[SerializeField] private LeanPlayer onTransitions;
 
 		/// <summary>This allows you to perform a transition when this toggle turns off.
 		/// You can create a new transition GameObject by right clicking the transition name, and selecting <b>Create</b>.
 		/// For example, the <b>Graphic.color Transition (LeanGraphicColor)</b> component can be used to change the color.</summary>
-		public LeanPlayer OffTransitions { get { if (offTransitions == null) offTransitions = new LeanPlayer(); return offTransitions; } } [SerializeField] private LeanPlayer offTransitions;
+		public LeanPlayer OffTransitions { get { if (offTransitions == null) offTransitions = new LeanPlayer(); return offTransitions; } }
+		[SerializeField] private LeanPlayer offTransitions;
 
 		/// <summary>This allows you to perform an action when this toggle turns on.</summary>
-		public UnityEvent OnOn { get { if (onOn == null) onOn = new UnityEvent(); return onOn; } } [SerializeField] private UnityEvent onOn;
+		public UnityEvent OnOn { get { if (onOn == null) onOn = new UnityEvent(); return onOn; } }
+		[SerializeField] private UnityEvent onOn;
 
 		/// <summary>This allows you to perform an action when this toggle turns off.</summary>
-		public UnityEvent OnOff { get { if (onOff == null) onOff = new UnityEvent(); return onOff; } } [SerializeField] private UnityEvent onOff;
+		public UnityEvent OnOff { get { if (onOff == null) onOff = new UnityEvent(); return onOff; } }
+		[SerializeField] private UnityEvent onOff;
 
 		[System.NonSerialized]
 		private LinkedListNode<LeanHoverableToggle> link;
 
-        [Header("Hoverable Transitions")]
-        public bool EnableHoverWhenOn { get { return enableHoverWhenOn; } } [SerializeField] private bool enableHoverWhenOn;
+		[Header("Hoverable Transitions")]
+		public bool EnableHoverWhenOn { get { return enableHoverWhenOn; } }
+		[SerializeField] private bool enableHoverWhenOn;
 
-		public bool EnableHoverWhenOff { get { return enableHoverWhenOff; } } [SerializeField] private bool enableHoverWhenOff;
+		public bool EnableHoverWhenOff { get { return enableHoverWhenOff; } }
+		[SerializeField] private bool enableHoverWhenOff;
 
-		public LeanPlayer OnEnterTransitions { get { if (onEnterTransitions == null) onEnterTransitions = new LeanPlayer(); return onEnterTransitions; } } [SerializeField] private LeanPlayer onEnterTransitions;
+		public LeanPlayer OnEnterTransitions { get { if (onEnterTransitions == null) onEnterTransitions = new LeanPlayer(); return onEnterTransitions; } }
+		[SerializeField] private LeanPlayer onEnterTransitions;
 
-		public LeanPlayer OnExitTransitions { get { if (onExitTransitions == null) onExitTransitions = new LeanPlayer(); return onExitTransitions; } } [SerializeField] private LeanPlayer onExitTransitions;
+		public LeanPlayer OnExitTransitions { get { if (onExitTransitions == null) onExitTransitions = new LeanPlayer(); return onExitTransitions; } }
+		[SerializeField] private LeanPlayer onExitTransitions;
 
 
-		public LeanPlayer OffEnterTransitions { get { if (offEnterTransitions == null) offEnterTransitions = new LeanPlayer(); return offEnterTransitions; } } [SerializeField] private LeanPlayer offEnterTransitions;
+		public LeanPlayer OffEnterTransitions { get { if (offEnterTransitions == null) offEnterTransitions = new LeanPlayer(); return offEnterTransitions; } }
+		[SerializeField] private LeanPlayer offEnterTransitions;
 
-		public LeanPlayer OffExitTransitions { get { if (offExitTransitions == null) offExitTransitions = new LeanPlayer(); return offExitTransitions; } } [SerializeField] private LeanPlayer offExitTransitions;
-        
+		public LeanPlayer OffExitTransitions { get { if (offExitTransitions == null) offExitTransitions = new LeanPlayer(); return offExitTransitions; } }
+		[SerializeField] private LeanPlayer offExitTransitions;
+
 
 		/// <summary>This allows you to perform an action when the mouse/finger enters this UI element.</summary>
-		public UnityEvent OnEnter { get { if (onEnter == null) onEnter = new UnityEvent(); return onEnter; } } [SerializeField] private UnityEvent onEnter;
+		public UnityEvent OnEnter { get { if (onEnter == null) onEnter = new UnityEvent(); return onEnter; } }
+		[SerializeField] private UnityEvent onEnter;
 
 		/// <summary>This allows you to perform an action when the mouse/finger exits this UI element.</summary>
-		public UnityEvent OnExit { get { if (onExit == null) onExit = new UnityEvent(); return onExit; } } [SerializeField] private UnityEvent onExit;
+		public UnityEvent OnExit { get { if (onExit == null) onExit = new UnityEvent(); return onExit; } }
+		[SerializeField] private UnityEvent onExit;
 
 		/// <summary>Track the currently down pointers so we can toggle the transition.</summary>
 		[System.NonSerialized]
@@ -74,77 +88,77 @@ namespace Lean.Gui
 
 		public void OnPointerEnter(PointerEventData eventData)
 		{
-            if(on && enableHoverWhenOn)
-            {
-                if (eventData.button == PointerEventData.InputButton.Left)
-                {
-                    enteredPointers.Add(eventData.pointerId);
+			if (on && enableHoverWhenOn)
+			{
+				if (eventData.button == PointerEventData.InputButton.Left)
+				{
+					enteredPointers.Add(eventData.pointerId);
 
-                    if (onEnterTransitions != null)
-                    {
-                        onEnterTransitions.Begin();
-                    }
-
-
-                    if (onEnter != null)
-                    {
-                        onEnter.Invoke();
-                    }
-                }
-            }
-            else if(!on && enableHoverWhenOff)
-            {
-                if (eventData.button == PointerEventData.InputButton.Left)
-                {
-                    enteredPointers.Add(eventData.pointerId);
-
-                    if (offEnterTransitions != null)
-                    {
-                        offEnterTransitions.Begin();
-                    }
+					if (onEnterTransitions != null)
+					{
+						onEnterTransitions.Begin();
+					}
 
 
-                    if (onEnter != null)
-                    {
-                        onEnter.Invoke();
-                    }
-                }
-            }
+					if (onEnter != null)
+					{
+						onEnter.Invoke();
+					}
+				}
+			}
+			else if (!on && enableHoverWhenOff)
+			{
+				if (eventData.button == PointerEventData.InputButton.Left)
+				{
+					enteredPointers.Add(eventData.pointerId);
+
+					if (offEnterTransitions != null)
+					{
+						offEnterTransitions.Begin();
+					}
+
+
+					if (onEnter != null)
+					{
+						onEnter.Invoke();
+					}
+				}
+			}
 
 		}
 
 		public void OnPointerExit(PointerEventData eventData)
 		{
-            if(on && enableHoverWhenOn)
-            {
-                if (enteredPointers.Remove(eventData.pointerId) == true)
-                {
-                    if (onExitTransitions != null)
-                    {
-                        onExitTransitions.Begin();
-                    }
+			if (on && enableHoverWhenOn)
+			{
+				if (enteredPointers.Remove(eventData.pointerId) == true)
+				{
+					if (onExitTransitions != null)
+					{
+						onExitTransitions.Begin();
+					}
 
-                    if (onExit != null)
-                    {
-                        onExit.Invoke();
-                    }
-                }
-            }
-            else if(!on && enableHoverWhenOff)
-            {
-                if (enteredPointers.Remove(eventData.pointerId) == true)
-                {
-                    if (offExitTransitions != null)
-                    {
-                        offExitTransitions.Begin();
-                    }
+					if (onExit != null)
+					{
+						onExit.Invoke();
+					}
+				}
+			}
+			else if (!on && enableHoverWhenOff)
+			{
+				if (enteredPointers.Remove(eventData.pointerId) == true)
+				{
+					if (offExitTransitions != null)
+					{
+						offExitTransitions.Begin();
+					}
 
-                    if (onExit != null)
-                    {
-                        onExit.Invoke();
-                    }
-                }
-            }
+					if (onExit != null)
+					{
+						onExit.Invoke();
+					}
+				}
+			}
 		}
 		public void Set(bool value)
 		{
@@ -236,7 +250,7 @@ namespace Lean.Gui
 		public static bool AllOn(string name)
 		{
 			var node = Instances.First;
-			var on   = false;
+			var on = false;
 
 			for (var i = Instances.Count - 1; i >= 0; i--)
 			{
@@ -262,7 +276,7 @@ namespace Lean.Gui
 		public static bool AllOff(string name)
 		{
 			var node = Instances.First;
-			var off   = false;
+			var off = false;
 
 			for (var i = Instances.Count - 1; i >= 0; i--)
 			{
