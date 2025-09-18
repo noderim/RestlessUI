@@ -1,14 +1,14 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Lean.Gui;
+using RestlessEngine;
+using RestlessEngine.Diagnostics;
+using RestlessEngine.SceneManagement;
+using TMPro;
+using UnityEngine;
+
 namespace RestlessUI
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Lean.Gui;
-    using RestlessEngine;
-    using RestlessEngine.Diagnostics;
-    using RestlessEngine.SceneManagement;
-    using TMPro;
-    using UnityEngine;
-
     public class LoadingScreen : SingletonSystem<LoadingScreen>
     {
         [Header("Loading Task")]

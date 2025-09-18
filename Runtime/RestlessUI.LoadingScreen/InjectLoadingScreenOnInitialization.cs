@@ -1,8 +1,8 @@
+using RestlessEngine.Application;
+using UnityEngine;
+
 namespace RestlessUI
 {
-    using RestlessEngine.Application;
-    using UnityEngine;
-
     public class InjectLoadingScreenOnInitialization : MonoBehaviour
     {
         public LoadingTask InitializationTask;

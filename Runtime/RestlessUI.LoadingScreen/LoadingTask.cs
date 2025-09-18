@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using UnityEngine;
+
 namespace RestlessUI
 {
-    using System.Collections.Generic;
-    using UnityEngine;
-
     public class LoadingTask
     {
         private float _progress = 0f;
