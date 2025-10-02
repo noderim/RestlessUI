@@ -1,10 +1,10 @@
 {
   "name": "com.restless.ui",
   "displayName": "Restless UI",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "unity": "2023.1",
   "description": "Restless UI framework using Lean GUI and UGUI, for Restless Engine.",
-  "assetsPackageFile": "Packages/com.restless.ui/assets.package",
+  "pathToAssets": "UI_Components.unitypackage",
   "dependencies": {
     "com.unity.localization": "1.5.7"
   },
