@@ -1,10 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
+using AYellowpaper.SerializedCollections;
+using UnityEngine.Events;
+using RestlessLib.Attributes;
 
 namespace RestlessUI
 {
+    [System.Serializable]
     public class LoadingTask
     {
+        [SerializeField]
         private float _progress = 0f;
         public float progress
         {
@@ -30,10 +35,29 @@ namespace RestlessUI
         public string LoadingTitle = "Loading";
         public string LoadingDescription = "Please wait...";
         public bool UsePredefinedProgressDescription = false;
-        public Dictionary<float, string> PredefinedProgressDescriptions = new Dictionary<float, string>();
-
+        public AYellowpaper.SerializedCollections.Dictionary<float, string> PredefinedProgressDescriptions = new AYellowpaper.SerializedCollections.Dictionary<float, string>();
+        [SerializeField]
         public LoadingScreenOptions Options = new LoadingScreenOptions();
 
+        [InfoBox("If true, the loading screen will refresh automatically, otherwise you need to call OnChangedEvent.Invoke() manually, externally.")]
+        public bool RefreshAutomatically = false;
+        public UnityEvent OnChangedEvent = new UnityEvent();
+
+        public string GetProgressDescription(float progress)
+        {
+            if (PredefinedProgressDescriptions.Count == 0)
+                return LoadingDescription;
+
+            float closestKey = 0f;
+            foreach (var key in PredefinedProgressDescriptions.Keys)
+            {
+                if (key <= progress && key > closestKey)
+                    closestKey = key;
+            }
+            return PredefinedProgressDescriptions[closestKey];
+        }
+
+        [System.Serializable]
         public struct LoadingScreenOptions
         {
             public bool ShowTitle;

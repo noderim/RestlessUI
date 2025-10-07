@@ -1,4 +1,5 @@
 using RestlessEngine.Application;
+using RestlessEngine.Diagnostics;
 using UnityEngine;
 
 namespace RestlessUI
@@ -13,12 +14,23 @@ namespace RestlessUI
         }
         public void CallInitializationLoadingScreen()
         {
-            _ = LoadingScreen.CallLoadingScreen(InitializationTask);
+            LogManager.Log("Calling Loading Screen for Initialization", LogTag.Debug);
+            LoadingScreen.CallLoadingScreen(InitializationTask);
         }
         public void OnInitializationStateChanged()
         {
             InitializationTask.progress = GameInitializationManager.Instance.InitializationProgress;
-            InitializationTask.LoadingDescription = GameInitializationManager.Instance.InitializationState;
+            if (InitializationTask.UsePredefinedProgressDescription)
+            {
+                InitializationTask.LoadingDescription = InitializationTask.GetProgressDescription(InitializationTask.progress);
+            }
+            else
+            {
+                InitializationTask.LoadingDescription = GameInitializationManager.Instance.InitializationState;
+            }
+
+
+            InitializationTask.OnChangedEvent?.Invoke();
         }
     }
 }

@@ -1,11 +1,10 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Lean.Gui;
 using RestlessEngine;
 using RestlessEngine.Diagnostics;
-using RestlessEngine.SceneManagement;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace RestlessUI
 {
@@ -20,13 +19,18 @@ namespace RestlessUI
         public TextMeshProUGUI Titletext;
         public TextMeshProUGUI DescriptionText;
         public TextMeshProUGUI ProgressText;
-        public RectTransform ProgressBarFill;
+        public Slider ProgressBarSlider;
         public RectTransform LoadingCircle;
-        public float LoadingCircleRotationSpeed = 360f; // degrees per second
+        [Header("Simulation")]
+        public float LoadingCircleRotationSpeed = 360f;
+        public bool AnimateProgressBar;
+        public float progressBarLerpFactor = 5f;
+        private float targetProgress = 0f;
+        public float LoadingCompleteDelay = 0.5f; // seconds
+        private float loadingCompleteTimer = 0f;
 
         [Header("Setup")]
-        public static SceneObject LoadingScreenScene;
-        public LeanWindow window;
+        public LeanToggle window;
 
         public void FixedUpdate()
         {
@@ -40,22 +44,26 @@ namespace RestlessUI
             if (LoadingCircle != null)
                 LoadingCircle.Rotate(Vector3.forward, -LoadingCircleRotationSpeed * Time.deltaTime);
 
-            Refresh(); // odświeżamy UI progress w czasie rzeczywistym
+            if (LinkedLoadingTask.RefreshAutomatically)
+            {
+                Refresh();
+            }
 
-            // Jeśli LinkedLoadingTask osiągnęła 100%, przechodzimy do następnego lub kończymy
+            if (ProgressBarSlider != null && AnimateProgressBar) ProgressBarSlider.value = Mathf.Lerp(ProgressBarSlider.value, targetProgress, Time.deltaTime * progressBarLerpFactor);
+
             if (LinkedLoadingTask != null && LinkedLoadingTask.progress >= 1f)
             {
-                CompleteCurrentTask();
+                loadingCompleteTimer += Time.fixedDeltaTime;
+                if (loadingCompleteTimer >= LoadingCompleteDelay)
+                {
+                    CompleteCurrentTask();
+                    loadingCompleteTimer = 0f;
+                }
             }
         }
 
-        public static async Task CallLoadingScreen(LoadingTask task, bool appendToQueue = true, bool forceLoadingScreen = false)
+        public static void CallLoadingScreen(LoadingTask task, bool appendToQueue = true, bool forceLoadingScreen = false)
         {
-            if (LoadingScreenScene.State != SceneState.Loaded)
-            {
-                await LoadingScreenScene.LoadScene();
-            }
-
             if (Instance.CurrentState == LoadingScreenState.Inactive || forceLoadingScreen)
             {
                 Instance.CurrentState = LoadingScreenState.Loading;
@@ -75,29 +83,38 @@ namespace RestlessUI
         {
             if (window == null)
             {
-                window = GetComponent<LeanWindow>();
+                window = GetComponent<LeanToggle>();
             }
 
-            SetupLoadingPanel();
             LinkedLoadingTask = LoadingScreenQueue[0];
+            SetupLoadingPanel();
+            LogManager.Log($"Loading screen started : {LinkedLoadingTask.LoadingTitle}, {LinkedLoadingTask.LoadingDescription}, progress: {LinkedLoadingTask.progress}, options: {LinkedLoadingTask.Options.ShowTitle}, {LinkedLoadingTask.Options.ShowDescription}, {LinkedLoadingTask.Options.ShowProgress}, {LinkedLoadingTask.Options.ShowLoadingCircle} ", LogTag.Debug);
             CurrentState = LoadingScreenState.Active;
-
             window.TurnOn();
             Refresh();
+
+            if (!LinkedLoadingTask.RefreshAutomatically)
+            {
+                LinkedLoadingTask.OnChangedEvent.AddListener(Refresh);
+            }
         }
         private void CompleteCurrentTask()
         {
             LoadingScreenQueue.Remove(LinkedLoadingTask);
+
+            if (!LinkedLoadingTask.RefreshAutomatically)
+            {
+                LinkedLoadingTask.OnChangedEvent.RemoveListener(Refresh);
+            }
+
             LinkedLoadingTask = null;
 
             if (LoadingScreenQueue.Count > 0)
             {
-                // Ładujemy kolejny task
                 LoadLoadingScreen();
             }
             else
             {
-                // Kończymy ładowanie
                 UnloadLoadingScreen();
             }
         }
@@ -117,14 +134,19 @@ namespace RestlessUI
             if (Titletext != null) Titletext.text = LinkedLoadingTask.LoadingTitle;
             if (DescriptionText != null) DescriptionText.text = LinkedLoadingTask.LoadingDescription;
             if (ProgressText != null) ProgressText.text = LinkedLoadingTask.progress.ToString("P0");
-            if (ProgressBarFill != null) ProgressBarFill.localScale = new Vector3(LinkedLoadingTask.progress, 1f, 1f);
+            targetProgress = LinkedLoadingTask.progress;
+
+            if (!AnimateProgressBar)
+            {
+                if (ProgressBarSlider != null) ProgressBarSlider.value = LinkedLoadingTask.progress;
+            }
         }
         private void SetupLoadingPanel()
         {
             Titletext.gameObject.SetActive(LinkedLoadingTask.Options.ShowTitle);
             DescriptionText.gameObject.SetActive(LinkedLoadingTask.Options.ShowDescription);
             ProgressText.gameObject.SetActive(LinkedLoadingTask.Options.ShowProgress);
-            ProgressBarFill.gameObject.SetActive(LinkedLoadingTask.Options.ShowProgress);
+            ProgressBarSlider.gameObject.SetActive(LinkedLoadingTask.Options.ShowProgress);
             LoadingCircle.gameObject.SetActive(LinkedLoadingTask.Options.ShowLoadingCircle);
         }
     }
