@@ -1,8 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
-using AYellowpaper.SerializedCollections;
 using UnityEngine.Events;
 using RestlessLib.Attributes;
+using AYellowpaper.SerializedCollections;
 
 namespace RestlessUI
 {
@@ -35,7 +34,7 @@ namespace RestlessUI
         public string LoadingTitle = "Loading";
         public string LoadingDescription = "Please wait...";
         public bool UsePredefinedProgressDescription = false;
-        public AYellowpaper.SerializedCollections.Dictionary<float, string> PredefinedProgressDescriptions = new AYellowpaper.SerializedCollections.Dictionary<float, string>();
+        public SerializedDictionary<float, string> PredefinedProgressDescriptions = new SerializedDictionary<float, string>();
         [SerializeField]
         public LoadingScreenOptions Options = new LoadingScreenOptions();
 
