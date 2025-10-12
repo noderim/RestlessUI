@@ -6,11 +6,12 @@ namespace RestlessUI
 {
     public class InjectLoadingScreenOnInitialization : MonoBehaviour
     {
+        public GameInitializationManager GameInitializationManager;
         public LoadingTask InitializationTask;
         private void Awake()
         {
-            GameInitializationManager.Instance.onGameInitializationStarted.AddListener(CallInitializationLoadingScreen);
-            GameInitializationManager.Instance.onGameInitializationProgressChanged.AddListener(OnInitializationStateChanged);
+            GameInitializationManager.onGameInitializationStarted.AddListener(CallInitializationLoadingScreen);
+            GameInitializationManager.onGameInitializationProgressChanged.AddListener(OnInitializationStateChanged);
         }
         public void CallInitializationLoadingScreen()
         {
