@@ -88,7 +88,7 @@ namespace RestlessUI
 
             LinkedLoadingTask = LoadingScreenQueue[0];
             SetupLoadingPanel();
-            LogManager.Log($"Loading screen started : {LinkedLoadingTask.LoadingTitle}, {LinkedLoadingTask.LoadingDescription}, progress: {LinkedLoadingTask.progress}, options: {LinkedLoadingTask.Options.ShowTitle}, {LinkedLoadingTask.Options.ShowDescription}, {LinkedLoadingTask.Options.ShowProgress}, {LinkedLoadingTask.Options.ShowLoadingCircle} ", LogTag.Debug);
+            // LogManager.Log($"Loading screen started : {LinkedLoadingTask.LoadingTitle}, {LinkedLoadingTask.LoadingDescription}, progress: {LinkedLoadingTask.progress}, options: {LinkedLoadingTask.Options.ShowTitle}, {LinkedLoadingTask.Options.ShowDescription}, {LinkedLoadingTask.Options.ShowProgress}, {LinkedLoadingTask.Options.ShowLoadingCircle} ", LogTag.Debug);
             CurrentState = LoadingScreenState.Active;
             window.TurnOn();
             Refresh();
